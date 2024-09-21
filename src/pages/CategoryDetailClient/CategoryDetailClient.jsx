@@ -5,7 +5,7 @@ import { useQueryHook } from "../../hooks/useQueryHook";
 import { Col, Container, Dropdown, DropdownButton, Row } from "react-bootstrap";
 import { getALLProductItemsByProductIdAPI } from "../../services/productItems";
 import "./style.css";
-import ProductCardComponent from "../../ProductCardComponent/ProductCardComponent";
+import ProductCardComponent from "../../components/ProductCardComponent/ProductCardComponent";
 import { getAllSizeOptionsV2 } from "../../services/sizeOption";
 import { getAllColourNoPaninationAPI } from "../../services/colour";
 const CategoryDetailClient = () => {

@@ -7,7 +7,7 @@ import { useMutationHook } from "../../hooks/useMutationHook";
 import { BsCheck2Circle } from "react-icons/bs";
 import { ContextSiteLayout } from "../../layouts/SiteLayout/SiteLayout";
 import { CiNoWaitingSign } from "react-icons/ci";
-import GoogleLoginComponent from "../../GoogleLoginComponent/GoogleLoginComponent";
+import GoogleLoginComponent from "../../components/GoogleLoginComponent/GoogleLoginComponent";
 const RegisterPage = () => {
   const location = useLocation();
   const navigate = useNavigate();

@@ -1,11 +1,11 @@
 import { GoogleLogin } from "@react-oauth/google";
 import React, { useContext } from "react";
 import { jwtDecode } from "jwt-decode";
-import { googleLogin } from "../services/userAPI";
-import { useMutationHook } from "../hooks/useMutationHook";
+import { googleLogin } from "../../services/userAPI";
+import { useMutationHook } from "../../hooks/useMutationHook";
 import { useNavigate } from "react-router-dom";
 import { BsCheck2Circle } from "react-icons/bs";
-import { ContextSiteLayout } from "../layouts/SiteLayout/SiteLayout";
+import { ContextSiteLayout } from "../../layouts/SiteLayout/SiteLayout";
 import "./style.css"; // Import file CSS
 
 const GoogleLoginComponent = () => {

@@ -7,10 +7,10 @@ import { getDetail, login } from "../../services/userAPI";
 import { useMutationHook } from "../../hooks/useMutationHook";
 import { BsCheck2Circle } from "react-icons/bs";
 import { CiNoWaitingSign } from "react-icons/ci";
-import GoogleLoginComponent from "../../GoogleLoginComponent/GoogleLoginComponent";
 import { jwtDecode } from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../redux/User/UserSlice";
+import GoogleLoginComponent from "../../components/GoogleLoginComponent/GoogleLoginComponent";
 function LoginPage() {
   const location = useLocation();
   const [showPassword, setShowPassword] = useState(false);
