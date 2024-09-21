@@ -1,0 +1,18 @@
+.list-group-item {
+    background-color: #2d2d2d !important;
+    gap: 10px;
+    height: 40px !important;
+    color: white !important;
+}
+
+.list-group-item:hover,.isactive {
+    background-color: white !important;
+    color: black !important;
+    cursor: pointer;
+}
+
+
+.brand-name {
+    border-bottom: 1px solid white;
+}
+

@@ -1,0 +1,16 @@
+.parent-category {
+  border-left: 0.1px solid white !important;
+  border-right: 0.1px solid white !important;
+  font-size: 14px !important;
+}
+
+header {
+  border-radius: 20px;
+}
+
+.position-relative {
+  border: none !important;
+}
+.popover-body{
+  padding: 0 !important;
+}

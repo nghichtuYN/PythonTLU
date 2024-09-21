@@ -1,0 +1,40 @@
+.accordion-header {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.selected-sizes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.clear-btn {
+  font-size: 12px;
+}
+
+.form-check-label {
+  font-size: 14px;
+  padding: 8px 10px;
+}
+
+.form-check-input:checked+.form-check-label {
+  background-color: #007bff;
+  color: white;
+}
+
+.form-control {
+  border-radius: 0;
+  padding: 8px;
+}
+
+.form-check .form-check-label{
+  margin-bottom: 0;
+  width: 100%;
+
+}
+.form-switch .form-check-label{
+  background-color: aliceblue !important;
+  color: black !important;
+}

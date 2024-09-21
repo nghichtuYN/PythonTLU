@@ -1,0 +1,31 @@
+.password-toggle-icon {
+    position: absolute;
+    top: 15%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 2;
+}
+
+.position-relative {
+    position: relative;
+}
+
+#form-input-email,
+#form-input-password {
+    border-radius: 0 !important;
+}
+.register{
+    position: relative;
+}
+.register ::after {
+    content: "";
+    height: 25px;
+    width: 2px;
+    position: absolute;
+    right: 0px;
+    top: 35px;
+    background: #2d2d2d;
+    opacity: .1;
+}

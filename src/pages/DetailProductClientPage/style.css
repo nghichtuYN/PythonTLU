@@ -1,0 +1,12 @@
+.carousel-control-next-icon{
+    color: black !important;
+}
+.carousel-control-pre-icon{
+    color: black !important;
+}
+.image_item:hover{
+    border: 1px solid blue !important;
+}
+.btn-add-to-cart{
+    border-radius: 0 !important;
+}
