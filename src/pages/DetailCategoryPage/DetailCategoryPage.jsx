@@ -97,7 +97,6 @@ export const DetailCategoryPage = () => {
       show: true,
       icon: <BsCheck2Circle size={40} color="white" />,
     });
-
   };
   const mutationDeleteSingleChild = useMutationHook((data) => {
     const { parentId, child_categories } = data;
@@ -120,9 +119,6 @@ export const DetailCategoryPage = () => {
   };
 
   const mutationUpdate = useMutationHook(updateCategory, onSuccess);
-  const handleActive = (id, is_active) => {
-    mutationUpdate.mutate({ id, is_active: !is_active });
-  };
 
   const handleConfirmUpdate = () => {
     mutationUpdate.mutate({
@@ -159,7 +155,7 @@ export const DetailCategoryPage = () => {
       parentId: category?.id,
       child_categories: checkedItems,
     });
-    setCheckedItems([])
+    setCheckedItems([]);
   };
   const popover = (
     <Popover id={`popover-positioned-top`}>
@@ -274,6 +270,15 @@ export const DetailCategoryPage = () => {
                       Thêm danh mục con
                     </Button>
                   </Col>
+                  <Col className="d-flex justify-content-end align-items-center">
+                    <Button
+                      onClick={handleConfirmUpdate}
+                      variant="dark"
+                      className="me-3 my-3"
+                    >
+                      Xác nhận
+                    </Button>
+                  </Col>
                 </Row>
                 <Form>
                   <Form.Group
@@ -320,7 +325,11 @@ export const DetailCategoryPage = () => {
                     <Col className="d-flex justify-content-end me-5 align-items-center">
                       <AdninSearchComponent placeholder={placeholder} />
                     </Col>
-                    <Table responsive className="category-table" style={{overflowY:'scroll'}}>
+                    <Table
+                      responsive
+                      className="category-table"
+                      style={{ overflowY: "scroll" }}
+                    >
                       <thead>
                         <tr style={{ backgroundColor: "grey" }}>
                           <th>
@@ -336,7 +345,6 @@ export const DetailCategoryPage = () => {
                           <th>Mô tả danh mục</th>
                           <th>Ngày tạo</th>
                           <th>Ngày cập nhật</th>
-                          <th>Tình trạng</th>
                           <th>Tùy chỉnh</th>
                         </tr>
                       </thead>
@@ -375,18 +383,6 @@ export const DetailCategoryPage = () => {
                                 <td>{categories?.category_description}</td>
                                 <td>{formattedCreatedDate}</td>
                                 <td>{formattedUpdatedDate}</td>
-                                <td>
-                                  <Form.Check
-                                    onChange={() =>
-                                      handleActive(
-                                        categories?.id,
-                                        categories?.is_active
-                                      )
-                                    }
-                                    checked={categories?.is_active}
-                                    type="switch"
-                                  />
-                                </td>
                                 <td className="d-flex align-items-center justify-content-center gap-1">
                                   <Button
                                     variant="success"
@@ -425,38 +421,7 @@ export const DetailCategoryPage = () => {
                       </Collapse>
                     </Table>
                   </Form.Group>
-                  <Form.Group
-                    as={Row}
-                    className="mb-3"
-                    controlId="formIsActive"
-                  >
-                    <Form.Label className="text-start ps-4" column sm="2">
-                      Kích hoạt:
-                    </Form.Label>
-                    <Col sm="10" className="text-start pt-2">
-                      <Form.Check
-                        type="switch"
-                        id="custom-switch"
-                        checked={is_active}
-                        onChange={() => setIs_Active(!is_active)}
-                      />
-                    </Col>
-                  </Form.Group>
                 </Form>
-
-                <div className="d-flex justify-content-end align-items-center">
-                  {/* <PaginationComponent
-                //   numPage={Math.ceil(categories?.count / limit)}
-                //   pageCurrent={page}
-                //   next={categories?.next}
-                //   previous={categories?.previous}
-                //   limit={limit}
-                //   refetch={refetch}
-                /> */}
-                  <Button onClick={handleConfirmUpdate} variant="dark" className="me-3 my-3">
-                    Xác nhận
-                  </Button>
-                </div>
               </div>
             </Container>
             <ModalAddComponent

@@ -21,7 +21,6 @@ import {
 } from "../OffcanvasComponent/OffcanvasComponent";
 import {
   FaRegUserIcon,
-  FaRegHeartIcon,
   GoSearchIcon,
   HiOutlineShoppingBagIcon,
 } from "../IconComponent/IconComponent";
@@ -29,11 +28,16 @@ import CategoryComponent from "../CategoryComponent/CategoryComponent";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { resetUser } from "../../redux/User/UserSlice";
+import { useDebounce } from "@uidotdev/usehooks";
+import { getALLProductItemsSearchAPI } from "../../services/productItems";
+import { SearchResultsComponent } from "../SearchResultsComponent/SearchResultsComponent";
 
 const HeaderComponent = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const [search, setSearch] = useState("");
+  const debouncedSearchTerm = useDebounce(search, 1000);
 
   const placeholder = "Tìm kiếm các mặt hàng và thương hiệu";
   const [show, setShow] = useState(false);
@@ -48,6 +52,22 @@ const HeaderComponent = () => {
   const handleToggleSearch = () => {
     handleShowSearch();
   };
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const getProductItemBySearch = async (search) => {
+    const res = await getALLProductItemsSearchAPI(search);
+    return res.data;
+  };
+  const { data: searchResult } = useQueryHook(
+    ["searchResults", debouncedSearchTerm],
+    () => getProductItemBySearch(debouncedSearchTerm),
+    {
+      enabled: !!debouncedSearchTerm,
+    }
+  );
+  console.log(searchResult);
   const handleLogout = async () => {
     dispatch(resetUser());
     localStorage.removeItem("access_token");
@@ -164,7 +184,12 @@ const HeaderComponent = () => {
               xxl={7}
               className="d-none d-md-flex d-lg-flex d-xl-flex d-xxl-flex pb-2 pt-2"
             >
-              <SearchComponent placeholder={placeholder} />
+              <SearchComponent
+                value={search}
+                onChange={handleChange}
+                placeholder={placeholder}
+              />
+              {/* {searchResult ? <SearchResultsComponent searchResult={{/> : null} */}
             </Col>
             <Col
               xs={8}
@@ -194,17 +219,17 @@ const HeaderComponent = () => {
                             {!user?.id ? (
                               <div className="d-flex justify-content-start align-items-center">
                                 <div
-                                className="me-2"
-                                  onClick={()=>navigate('/login')}
-                                  style={{ cursor: "pointer", }}
+                                  className="me-2"
+                                  onClick={() => navigate("/login")}
+                                  style={{ cursor: "pointer" }}
                                 >
                                   Đăng nhập
                                 </div>
                                 {" | "}
                                 <div
-                                className="ms-2"
-                                  onClick={()=>navigate('/register')}
-                                  style={{ cursor: "pointer", }}
+                                  className="ms-2"
+                                  onClick={() => navigate("/register")}
+                                  style={{ cursor: "pointer" }}
                                 >
                                   Đăng ký
                                 </div>
@@ -227,16 +252,23 @@ const HeaderComponent = () => {
                               style={{ padding: 0 }}
                               variant="flush"
                             >
-                              <ListGroup.Item>Đơn hàng</ListGroup.Item>
-                              <ListGroup.Item>
-                                Thông tin tài khoản
+                              <ListGroup.Item
+                                onClick={() =>
+                                  navigate(`/user/${user?.id}/order`)
+                                }
+                              >
+                                Đơn hàng
                               </ListGroup.Item>
                             </ListGroup>
                           </Popover.Body>
                         </Popover>
                       }
                     >
-                      <Button size="sm" variant="outline-dark">
+                      <Button
+                        className="btn-user"
+                        size="sm"
+                        variant="outline-dark"
+                      >
                         <FaRegUserIcon />
                       </Button>
                     </OverlayTrigger>

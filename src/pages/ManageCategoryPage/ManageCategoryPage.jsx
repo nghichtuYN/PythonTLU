@@ -57,7 +57,7 @@ export default function ManageCategoryPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const page = searchParams.get("page") || 1;
+  const page = searchParams.get("page") || "1";
   const [checkedItems, setCheckedItems] = useState([]);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -65,8 +65,8 @@ export default function ManageCategoryPage() {
   const [showPopover, setShowPopover] = useState(false);
   const [currentPopoverId, setCurrentPopoverId] = useState(null);
   //get all categories fn
-  const getAllProductCategory = async (page,search) => {
-    const res = await getAllCategoriesAPI(page,search);
+  const getAllProductCategory = async (page, search) => {
+    const res = await getAllCategoriesAPI(page, search);
     return res.data;
   };
 
@@ -83,7 +83,9 @@ export default function ManageCategoryPage() {
     data: categories,
     refetch,
     isFetching,
-  } = useQueryHook(["categories", page,debouncedSearchTerm], () => getAllProductCategory(page,debouncedSearchTerm));
+  } = useQueryHook(["categories", page, debouncedSearchTerm], () =>
+    getAllProductCategory(page, debouncedSearchTerm)
+  );
 
   const { data: allSizeCategories } = useQueryHook(
     ["allSizeCategories"],
@@ -133,10 +135,12 @@ export default function ManageCategoryPage() {
             )}`
           );
         else navigate(`/admin/category/?page=${1}`);
+        setCheckedItems([]);
       }
-    } else {
-      refetch();
     }
+    refetch();
+    setCheckedItems([]);
+
     setToaster({
       type: "success",
       message: "Cập nhật thành công🚀",
@@ -164,7 +168,8 @@ export default function ManageCategoryPage() {
           );
         else navigate(`/admin/category/?page=${1}`);
       }
-    } else refetch();
+    }
+    refetch();
     setToaster({
       type: "success",
       message: "Cập nhật thành công🚀",
@@ -429,7 +434,8 @@ export default function ManageCategoryPage() {
               {!isFetching && categories?.results?.length > 0 ? (
                 <PaginationComponent
                   numPage={
-                    categories?.results?.length > 0 &&  Math.ceil(categories?.count / limit)
+                    categories?.results?.length > 0 &&
+                    Math.ceil(categories?.count / limit)
                   }
                   pageCurrent={page}
                   search={searchValue}

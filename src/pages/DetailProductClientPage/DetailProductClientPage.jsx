@@ -12,11 +12,9 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useQueryHook } from "../../hooks/useQueryHook";
 import { getALLProductItemsByProductIdAPI } from "../../services/productItems";
-import { getProductImageByProductItemsAPI } from "../../services/productImgae";
 import "./style.css";
 import { Heart, Truck } from "lucide-react";
 import { TbTruckReturn } from "react-icons/tb";
-import { getAllProductVaritaionNoPanination } from "../../services/productVariation";
 import { useDispatch } from "react-redux";
 import { addOrderProduct } from "../../redux/Order/OrderSlide";
 
@@ -26,16 +24,8 @@ const DetailProductClientPage = () => {
   const [hoveredColor, setHoveredColor] = useState(""); // State for color name
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [selectedSize, setSelectedSize] = useState();
 
-  const getAllVariation = async (id) => {
-    const res = await getAllProductVaritaionNoPanination(id);
-    return res.data;
-  };
-
-  const { data: allVariation, refetch: reFetchVariation } = useQueryHook(
-    ["allVariation", itemID],
-    () => getAllVariation(itemID)
-  );
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
   };
@@ -65,43 +55,24 @@ const DetailProductClientPage = () => {
 
   const location = useLocation();
   const category = location.state.category;
+
+  const getProductItemsByProductId = async (id) => {
+    try {
+      const res = await getALLProductItemsByProductIdAPI(id);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const { data: productItems, refetch: refetchProductItems } = useQueryHook(
     ["productItems", id],
-    async () => {
-      try {
-        const res = await getALLProductItemsByProductIdAPI(id);
-        const items = res.data;
-        const productItems = await Promise.all(
-          items.map(async (item) => {
-            try {
-              const itemImages = await getProductImageByProductItemsAPI(
-                item.id
-              );
-              return {
-                ...item, // keep item data
-                images: itemImages?.data?.results || [], // if no image, return []
-              };
-            } catch (error) {
-              console.log(
-                `Error fetching data for product item ${item.id}:`,
-                error
-              );
-              return {
-                images: [],
-              };
-            }
-          })
-        );
-        return productItems;
-      } catch (error) {
-        console.log("Error fetching product items:", error);
-        return [];
-      }
-    }
+    () => getProductItemsByProductId(id)
   );
 
   const currentItem = productItems?.find((item) => item.id === itemID);
+  console.log(currentItem);
 
+  console.log(selectedSize);
   const handleAddOrderProduct = () => {
     dispatch(
       addOrderProduct({
@@ -111,11 +82,12 @@ const DetailProductClientPage = () => {
           image: currentItem?.images[0]?.image_filename,
           price: currentItem?.original_price,
           product: currentItem?.id,
+          size_name: selectedSize?.size_option?.size_name,
+          size: selectedSize?.id,
         },
       })
     );
   };
-  console.log(currentItem)
   return (
     <Container fluid style={{ padding: 0 }}>
       <Row
@@ -234,14 +206,26 @@ const DetailProductClientPage = () => {
                 ))}
                 <Form.Group className="mb-3 mt-3 text-start">
                   <Form.Label>Kích cỡ</Form.Label>
-                  <Form.Select>
+                  <Form.Select
+                    onChange={(e) =>
+                      setSelectedSize(
+                        currentItem?.variations.find(
+                          (v) => v.id === (e.target.value)
+                        )
+                      )
+                    }
+                  >
                     <option>Lựa chọn kích cỡ</option>
-                    {allVariation?.map((variation) => (
+                    {currentItem?.variations?.map((variation) => (
                       <option key={variation?.id} value={variation?.id}>
-                        {variation?.size_option?.size_name}
+                        {variation?.size_option?.size_name}{" "}
+                        {variation?.qty_in_stock > 0
+                          ? `(${variation?.qty_in_stock})`
+                          : "(hết hàng)"}
                       </option>
                     ))}
                   </Form.Select>
+
                   <div className="d-flex justify-content-start align-items-center gap-2 mt-3">
                     <Button
                       variant="success"
@@ -267,6 +251,7 @@ const DetailProductClientPage = () => {
                     </Card.Subtitle>
                   </Card.Body>
                 </Card>
+                
               </Row>
             </Container>
           </Row>

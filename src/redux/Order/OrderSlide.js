@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   orderItems: [],
-  shippingAddress: "",
   user: "",
   isPaid: false,
 };
@@ -10,16 +9,15 @@ export const OrderSlice = createSlice({
   initialState,
   reducers: {
     addOrderProduct: (state, action) => {
-      const { orderItem, shippingAddress } = action.payload;
+      const { orderItem } = action.payload;
       const alreadyItem = state?.orderItems?.find(
-        (item) => item?.product === orderItem.product
+        (item) => item?.product === orderItem.product && item?.size === orderItem.size
       );
       if (alreadyItem) {
         alreadyItem.amount += orderItem.amount;
       } else {
         state?.orderItems?.push(orderItem);
       }
-      state.shippingAddress = shippingAddress;
     },
     increaseAmount: (state, action) => {
       const { idProduct } = action.payload;

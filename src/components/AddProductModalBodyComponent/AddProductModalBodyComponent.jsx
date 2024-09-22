@@ -38,7 +38,7 @@ export default function AddProductModalBodyComponent({ dataRecord }) {
           <Form.Label>Mô tả sản phẩm</Form.Label>
           <Form.Control
             as="textarea"
-            type="password"
+            type="text"
             placeholder="Nhập mô tả sản phẩm"
             style={{ height: "100px" }}
             value={productDescription}

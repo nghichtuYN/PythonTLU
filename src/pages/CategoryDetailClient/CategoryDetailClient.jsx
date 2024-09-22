@@ -6,13 +6,12 @@ import { Col, Container, Dropdown, DropdownButton, Row } from "react-bootstrap";
 import { getALLProductItemsByProductIdAPI } from "../../services/productItems";
 import "./style.css";
 import ProductCardComponent from "../../components/ProductCardComponent/ProductCardComponent";
-import { getAllSizeOptionsV2 } from "../../services/sizeOption";
 import { getAllColourNoPaninationAPI } from "../../services/colour";
 const CategoryDetailClient = () => {
   const { gender, id, category } = useParams();
 
   const getAllProductByID = async (id) => {
-    const res = await getProductByCatId({ catId: id });
+    const res = await getProductByCatId(id);
     return res.data;
   };
   const { data: allProduct = [], isFetching } = useQueryHook(
@@ -26,7 +25,7 @@ const CategoryDetailClient = () => {
               const item = await getALLProductItemsByProductIdAPI(pro.id);
               return {
                 ...pro,
-                items: item || [],
+                items: item?.data || [],
               };
             } catch (error) {
               console.log(`Error fetching data for product ${pro.id}:`, error);
@@ -46,21 +45,11 @@ const CategoryDetailClient = () => {
     }
   );
 
-  const idSizeCategory = allProduct[0]?.product_category?.size_category?.id;
-  const getALlSizeOption = async (id) => {
-    const res = await getAllSizeOptionsV2({ id });
-    return res.data;
-  };
-
   const getAllColour = async () => {
     const res = await getAllColourNoPaninationAPI();
     return res.data;
   };
 
-  const { data: allSizeOption } = useQueryHook(
-    ["allSizeOption", idSizeCategory],
-    () => getALlSizeOption(idSizeCategory)
-  );
   const { data: allColour } = useQueryHook(["allColour"], getAllColour);
   console.log(allColour);
   return (
@@ -93,50 +82,9 @@ const CategoryDetailClient = () => {
             {category}
           </Row>
           <Row style={{ padding: "0 120px", backgroundColor: "#eeeeee" }}>
-            <Col md={2} className="mb-2 mt-2">
-              <DropdownButton variant="seccondary" title="Sắp xếp">
-                <Dropdown.Item href="#/action-1">
-                  Giá từ thấp đến cao
-                </Dropdown.Item>
-                <Dropdown.Item href="#/action-2">
-                  Giá từ cao đến thấp
-                </Dropdown.Item>
-              </DropdownButton>
-            </Col>
-            <Col md={2} className="mb-2 mt-2">
-              <DropdownButton variant="seccondary" title="Kích cỡ">
-                {allSizeOption &&
-                  allSizeOption?.map((size) => (
-                    <Dropdown.Item key={size?.id}>
-                      {size?.size_name}
-                    </Dropdown.Item>
-                  ))}
-              </DropdownButton>
-            </Col>
-            <Col md={2} className="mb-2 mt-2">
-              <DropdownButton variant="seccondary" title="Thương hiệu">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </DropdownButton>
-            </Col>
-            <Col md={2} className="mb-2 mt-2">
-              <DropdownButton variant="seccondary" title="Màu sắc">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </DropdownButton>
-            </Col>
-            <Col md={2} className="mb-2 mt-2">
-              <DropdownButton variant="seccondary" title="Khoảng giá">
-                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
-              </DropdownButton>
-            </Col>
-          </Row>
-          <Row style={{ padding: "0 120px" }} className="d-flex ">
             <p className="pt-2">{allProduct?.length} kết quả</p>
+          </Row>
+          <Row style={{ padding: "30px 120px" }} className="d-flex ">
             {allProduct?.map((product) => (
               <ProductCardComponent key={product?.id} product={product} />
             ))}

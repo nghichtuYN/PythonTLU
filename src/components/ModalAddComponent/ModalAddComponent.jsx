@@ -33,8 +33,6 @@ const ModalAddComponent = (props) => {
     show,
     handleClose,
     refetch,
-    refetchFilter,
-    searchValue,
     product,
     allColours,
   } = props;
@@ -70,14 +68,9 @@ const ModalAddComponent = (props) => {
     if (condision === isAddProductItems?.current || isDetailProduct) {
       return createProductItemAPI(data);
     }
-    
   };
   const onSuccess = () => {
-    if (searchValue !== "" && searchValue !== undefined) {
-      refetchFilter();
-    } else {
-      refetch();
-    }
+    refetch();
 
     setToaster({
       type: "success",
@@ -132,11 +125,11 @@ const ModalAddComponent = (props) => {
         condision: isAddProductItems?.current || isDetailProduct,
       });
     }
-    if(isDetailProductItem){
+    if (isDetailProductItem) {
       mutaionAddRecord.mutate({
-        data:dataRecord?.current,
-        condision:isDetailProductItem
-      })
+        data: dataRecord?.current,
+        condision: isDetailProductItem,
+      });
     }
   };
   return (

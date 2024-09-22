@@ -164,7 +164,7 @@ export const AddCategoryComponent = ({ dataRecord }) => {
           >
             <FloatingLabel controlId="floatingSelect" label="Kích cỡ danh mục">
               <Form.Select onChange={(e)=>setSizeCategory(e.target.value)}>
-                <option >--Chọn kích cỡ danh mục--</option>
+                <option value={""} >--Chọn kích cỡ danh mục--</option>
                 {allSizeCategories?.map((category) => (
                   <option key={category?.id} value={category?.id}>
                     {category?.category_name}{category?.id}

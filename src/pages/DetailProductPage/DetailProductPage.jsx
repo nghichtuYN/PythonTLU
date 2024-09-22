@@ -63,12 +63,10 @@ const DetailProductPage = () => {
   const limit = 10;
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const page = searchParams.get("page") || 1;
+  const page = searchParams.get("page") || "1";
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
-  const onChange = (e) => {
-    setSearch(e.target.value);
-  };
+
   const debouncedSearchTerm = useDebounce(search, 1000);
 
   const getDetailProductByID = async (id) => {
@@ -80,14 +78,9 @@ const DetailProductPage = () => {
     }
   };
 
-  const getProductItemsByProductId = async (navigate, id, page, search) => {
+  const getProductItemsByProductId = async (id, page, search) => {
     try {
-      const res = await getProductItemsByProductIdAPI(
-        navigate,
-        id,
-        page,
-        search
-      );
+      const res = await getProductItemsByProductIdAPI(id, page, search);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -103,8 +96,8 @@ const DetailProductPage = () => {
   });
 
   const { data: productItems, refetch: refetchProductItems } = useQueryHook(
-    ["productItems", navigate, id, page, debouncedSearchTerm],
-    () => getProductItemsByProductId(navigate, id, page, debouncedSearchTerm)
+    ["productItems", id, page, debouncedSearchTerm],
+    () => getProductItemsByProductId( id, page, debouncedSearchTerm)
   );
 
   useEffect(() => {
@@ -152,9 +145,7 @@ const DetailProductPage = () => {
 
   const onSuccessDelete = () => {
     if (checkedItems?.length === productItems?.results?.length) {
-      console.log(page, page === 1, page === "1", typeof page);
       if (page !== "1") {
-        console.log("run1");
         if (search !== "")
           navigate(
             `/admin/product/detailProduct/?page=${
@@ -261,6 +252,13 @@ const DetailProductPage = () => {
       checkedItems.length === productItems?.results?.length
         ? []
         : productItems?.results?.map((item) => item?.id)
+    );
+  };
+
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    navigate(
+      `/admin/product/detailProduct/${product?.id}/?page=1&search=${encodeURIComponent(e.target.value)}`
     );
   };
 
@@ -506,7 +504,7 @@ const DetailProductPage = () => {
                     </Form.Label>
                     <Col className="d-flex justify-content-end me-5 align-items-center">
                       <AdninSearchComponent
-                        onChange={onChange}
+                        onChange={handleSearchChange}
                         placeholder={placeholder}
                         value={search}
                       />

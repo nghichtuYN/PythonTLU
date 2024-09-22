@@ -1,15 +1,10 @@
 import axios from "axios";
 const API_URLS = process.env.REACT_APP_API;
-export const getAllProductsAPI = async (page) => {
-  const res = await axios.get(`${API_URLS}products/?page=${page}`);
-  return res;
-};
-
-export const getProductsBySearchAPI = async (searchValue, page) => {
+export const getAllProductsAPI = async (page, searchValue) => {
   const res = await axios.get(
-    `${API_URLS}products/?page=${page}&search=${encodeURIComponent(
-      searchValue
-    )}`
+    `${API_URLS}products/?page=${page}${
+      searchValue ? "&search=" + searchValue : ""
+    }`
   );
   return res;
 };
@@ -40,10 +35,9 @@ export const getDetailProductAPI = async (id) => {
   return res;
 };
 
-export const getProductByCatId = async (data) => {
-  const res = await axios.post(
-    `${API_URLS}products/get_products_by_category/`,
-    data
+export const getProductByCatId = async (id) => {
+  const res = await axios.get(
+    `${API_URLS}products/?all=true&product_category__public_id=${id}`,
   );
   return res;
 };

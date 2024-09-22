@@ -35,8 +35,8 @@ const ManageOrdersPage = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const getAllOrders = async (page, search, navigate) => {
-    const res = await getAllOrdersAPI(page, search, navigate);
+  const getAllOrders = async (page, search) => {
+    const res = await getAllOrdersAPI(page, search);
     return res.data;
   };
   const onChange = (e) => {
@@ -46,8 +46,8 @@ const ManageOrdersPage = () => {
     data: orders,
     refetch,
     isLoading,
-  } = useQueryHook(["products", page, debouncedSearchTerm, navigate], () =>
-    getAllOrders(page, debouncedSearchTerm, navigate)
+  } = useQueryHook(["products", page, debouncedSearchTerm], () =>
+    getAllOrders(page, debouncedSearchTerm)
   );
 
   const onSuccess = () => {

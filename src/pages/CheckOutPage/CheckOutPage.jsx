@@ -14,11 +14,12 @@ import { createOrders } from "../../services/orders";
 import { DefaultContext } from "../../layouts/DefaultLayout/DefaultLayout";
 import { BsCheck2Circle } from "react-icons/bs";
 import { CiNoWaitingSign } from "react-icons/ci";
+import { useNavigate } from "react-router-dom";
 const CheckOutPage = () => {
   const order = useSelector((state) => state.order);
   const user = useSelector((state) => state.user);
   const { setToaster } = useContext(DefaultContext);
-
+  const naviagte=useNavigate()
   const [cusName, setCusName] = useState("");
   const [cusPhone, setCusPhone] = useState("");
   const [cusAddress, setCusAddress] = useState("");
@@ -28,8 +29,9 @@ const CheckOutPage = () => {
     0
   );
 
+
   const onSuccess = () => {
-    // console.log("run")
+    naviagte(`/user/${user?.id}/order/`)
     setToaster({
       type: "success",
       message: "Đặt hàng thành công🚀",
@@ -39,7 +41,6 @@ const CheckOutPage = () => {
   };
 
   const onError = (data) => {
-    console.log(data)
     setToaster({
       type: "danger",
       message: "Đặt hàng thất bại🚀",

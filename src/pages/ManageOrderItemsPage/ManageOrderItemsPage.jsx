@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getOrderItemsByOrderID } from "../../services/ordetItems";
 import { useQueryHook } from "../../hooks/useQueryHook";
 import {
-  Badge,
   Button,
   Col,
   Collapse,
@@ -13,58 +12,65 @@ import {
   Row,
   Table,
 } from "react-bootstrap";
-import { AdninSearchComponent } from "../../components/AdminSearchComponent/AdminSearchComponent";
 import { useDebounce } from "@uidotdev/usehooks";
 import { Context } from "../../layouts/AdminLayout/AdminLayout";
 import { SquarePen } from "lucide-react";
-import { getProductImageByProductItemsAPI } from "../../services/productImgae";
+import { getOrderById, updateOrderStatus } from "../../services/orders"; // Giả sử bạn có service lấy thông tin Order
+import { useMutationHook } from "../../hooks/useMutationHook";
+import { updateProduct } from "../../services/products";
+import { BsCheck2Circle } from "react-icons/bs";
 
 export const ManageOrderItemsPage = () => {
   const { id } = useParams();
   const isOrders = "isOrders";
-  const placeholder = "Tìm kiếm...";
-  const [search, setSearch] = useState("");
-  const debouncedSearchTerm = useDebounce(search, 1000);
   const { setToaster } = useContext(Context);
   const navigate = useNavigate();
 
-  const onChange = (e) => {
-    setSearch(e.target.value);
+  const getOrderDetails = async (id) => {
+    const res = await getOrderById(id);
+    return res.data;
   };
+
   const getAllOrderItems = async (id) => {
     const res = await getOrderItemsByOrderID(id);
     return res.data;
   };
-  const { data: orderItems, isLoading } = useQueryHook(
-    ["orderItems", id],
-    async () => {
-      const res = await getAllOrderItems(id);
-      const ord = res.results;
-      const orderItem = await Promise.all(
-        ord.map(async (item) => {
-          try {
-            const itemImages = await getProductImageByProductItemsAPI(
-              item?.product_item.id
-            );
-            return {
-              ...item, // keep item data
-              images: itemImages?.data?.results || [], // if no image, return []
-            };
-          } catch (error) {
-            console.log(
-              `Error fetching data for product item ${item.id}:`,
-              error
-            );
-            return {
-              images: [],
-            };
-          }
-        })
-      );
-      return orderItem;
-    }
+
+  const {
+    data: orderItems,
+    refetch: refetchOrder,
+    isLoading,
+  } = useQueryHook(["orderItems", id], () => getAllOrderItems(id));
+  const { data: orderDetails, refetch } = useQueryHook(
+    ["orderDetails", id],
+    () => getOrderDetails(id)
   );
-  console.log(orderItems);
+
+  useEffect(() => {}, [orderDetails]);
+  const onSuccess = () => {
+    refetch();
+    refetchOrder();
+    setToaster({
+      type: "success",
+      message: "Xóa thành công🚀",
+      show: true,
+      icon: <BsCheck2Circle size={40} color="white" />,
+    });
+  };
+  const mutationUpdate = useMutationHook((data) => {
+    const { id, ...rest } = data;
+    return updateOrderStatus(id, rest);
+  }, onSuccess);
+
+  const handleUpdatePaymentStatus = () => {
+    mutationUpdate.mutate({
+      id: id,
+      isPaid: true,
+      cus_name: orderDetails?.cus_name,
+      cus_address: orderDetails?.cus_address,
+      cus_email: orderDetails?.cus_email,
+    });
+  };
   return (
     <div
       className="manage-product-detail-page pb-2"
@@ -76,6 +82,118 @@ export const ManageOrderItemsPage = () => {
       }}
     >
       <Container className="ps-4 pe-4">
+        {orderDetails && (
+          <Row className="order-info mt-4">
+            <Col xs={12} md={6}>
+              <Form>
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Tên khách hàng:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={orderDetails.cus_name}
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Địa chỉ khách hàng:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={orderDetails.cus_address}
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Email khách hàng:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="email"
+                      readOnly
+                      value={orderDetails.cus_email}
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Số điện thoại:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={orderDetails.cus_phone}
+                    />
+                  </Col>
+                </Form.Group>
+              </Form>
+            </Col>
+
+            <Col xs={12} md={6}>
+              <Form>
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Tổng chi phí:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="number"
+                      readOnly
+                      value={orderDetails.ord_cost}
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Trạng thái thanh toán:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={
+                        orderDetails.isPaid
+                          ? "Đã thanh toán"
+                          : "Chưa thanh toán"
+                      }
+                    />
+                  </Col>
+                </Form.Group>
+
+                <Form.Group as={Row} className="mb-3">
+                  <Form.Label column sm={3}>
+                    Người dùng:
+                  </Form.Label>
+                  <Col sm={9}>
+                    <Form.Control
+                      type="text"
+                      readOnly
+                      value={orderDetails.user?.id}
+                    />
+                  </Col>
+                </Form.Group>
+                {!orderDetails.isPaid && (
+                  <Button variant="primary" onClick={handleUpdatePaymentStatus}>
+                    Đánh dấu là đã thanh toán
+                  </Button>
+                )}
+              </Form>
+            </Col>
+          </Row>
+        )}
+
         <Row className="pt-4">
           <Col className="text-start ps-5 fw-bolder fs-5">
             <p>
@@ -83,12 +201,7 @@ export const ManageOrderItemsPage = () => {
             </p>
           </Col>
           <Col className="text-end pe-5">
-            <span
-              className="fw-bolder "
-              // onClick={() => navigate("/admin/categories")}
-            >
-              Đơn hàng{" "}
-            </span>
+            <span className="fw-bolder">Đơn hàng</span>
             {">"} Quản lý đơn hàng {">"} Chi tiết đơn hàng
           </Col>
         </Row>
@@ -118,7 +231,7 @@ export const ManageOrderItemsPage = () => {
               </thead>
               <Collapse in={!!orderItems} dimension={"height"}>
                 <tbody>
-                  {orderItems?.map((item) => {
+                  {orderItems?.results?.map((item) => {
                     const created_date = new Date(item?.created);
                     const updated_date = new Date(item?.updated);
                     const formattedCreatedDate = created_date.toLocaleString(
@@ -145,10 +258,9 @@ export const ManageOrderItemsPage = () => {
                       <tr key={item?.id}>
                         <td>{item?.orders}</td>
                         <td>{item?.product_item?.product?.product_name}</td>
-
                         <td>
                           <Image
-                            src={item?.images[0]?.image_filename}
+                            src={item?.product_item?.images[0]?.image_filename}
                             style={{ height: "80px", width: "70px" }}
                           />
                         </td>

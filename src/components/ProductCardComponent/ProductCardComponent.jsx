@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./style.css"
 const ProductCardComponent = ({ product }) => {
   const navigate = useNavigate();
+  console.log(product)
   const [currentImage, setCurrentImage] = useState(
     product?.items[0]?.images[0]?.image_filename
   );
@@ -19,7 +20,6 @@ const ProductCardComponent = ({ product }) => {
   };
 
   const handleClick = () => {
-    console.log("run")
     navigate(`/${product?.product_name}/prd/${product?.id}/items/${product && product?.items[0]?.id}`, {
       state: { category: product?.product_category?.category_name },
     });

@@ -52,6 +52,7 @@ const ShoppingCartPage = () => {
   const handleMain = () => {
     navigate("/men");
   };
+  console.log(order)
   return (
     <>
       {!user?.id ? (
@@ -129,6 +130,7 @@ const ShoppingCartPage = () => {
                                           className="text-muted"
                                         >
                                           {item?.name}
+                                          {item?.size_name}
                                         </MDBTypography>
                                       </td>
                                       <td>

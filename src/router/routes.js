@@ -1,4 +1,3 @@
-import DashboardPage from "../pages/DashboardPage/DashboardPage";
 import { DetailCategoryPage } from "../pages/DetailCategoryPage/DetailCategoryPage";
 import LoginPage from "../pages/LoginPage/LoginPage";
 import ManageCategoryPage from "../pages/ManageCategoryPage/ManageCategoryPage";
@@ -15,8 +14,9 @@ import ShoppingCartPage from "../pages/ShoppingCartPage/ShoppingCartPage";
 import CheckOutPage from "../pages/CheckOutPage/CheckOutPage";
 import ManageOrdersPage from "../pages/ManageOrdersPage/ManageOrdersPage";
 import { ManageOrderItemsPage } from "../pages/ManageOrderItemsPage/ManageOrderItemsPage";
+import AdminLoginPage from "../pages/AdminLoginPage/AdminLoginPage";
+import OrderPage from "../pages/OrderPage/OrderPage";
 export const publicRouter = [
-  { path: "admin/dashboard/", component: DashboardPage, layout: "admin" },
   { path: "/admin/product/", component: ManageProduct, layout: "admin" },
   {
     path: "/admin/category/",
@@ -54,6 +54,11 @@ export const publicRouter = [
     layout: "admin",
   },
   {
+    path: "/admin/login",
+    component: AdminLoginPage,
+    layout: "none",
+  },
+  {
     path: "/:gender/",
     component: HomePage,
     layout: "client",
@@ -76,6 +81,11 @@ export const publicRouter = [
   {
     path: "/checkout",
     component: CheckOutPage,
+    layout: "client",
+  },
+  {
+    path: "/user/:id/order",
+    component: OrderPage,
     layout: "client",
   },
   {

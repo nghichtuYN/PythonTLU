@@ -2,6 +2,7 @@ import React from "react";
 import { FaSearch } from "react-icons/fa";
 import "./SearchBar.css";
 export const SearchComponent = (props) => {
+  
   const { value, placeholder, onChange } = props;
   return (
     <div className="input-wrapper ">

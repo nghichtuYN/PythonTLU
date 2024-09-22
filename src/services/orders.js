@@ -5,14 +5,23 @@ export const createOrders = async (data) => {
   return res;
 };
 
-export const getAllOrdersAPI = async (page, search, navigate) => {
-  if (search) {
-    navigate(`/admin/orders/?page=${1}&search=${search}`);
-  }
+export const getAllOrdersAPI = async (page, search) => {
   const res = await axios.get(
-    `${API_URLS}orders/?page=${search ? 1 : page}${
-      search ? "&search=" + search : ""
-    }`
+    `${API_URLS}orders/?page=${page}${search ? "&search=" + search : ""}`
   );
+  return res;
+};
+
+export const getOrderById = async (id) => {
+  const res = await axios.get(`${API_URLS}orders/${id}/`);
+  return res;
+};
+export const updateOrderStatus = async (orderId, data) => {
+  const res = await axios.put(`${API_URLS}orders/${orderId}/`, data);
+  return res;
+};
+
+export const getOrderByUser = async (id) => {
+  const res = await axios.get(`${API_URLS}user/${id}/orders/?all=true`);
   return res;
 };

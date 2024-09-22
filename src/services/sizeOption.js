@@ -4,8 +4,8 @@ export const getAllSizeOptions = async (id) => {
   const res = await axios.get(`${API_URLS}size_category/${id}/size_option/`);
   return res;
 };
-export const getAllSizeOptionsV2 = async (data) => {
-  const res = await axios.post(`${API_URLS}size_option/get_all_size_options_by_size_category/`,data);
+export const getAllSizeOptionsV2 = async (id) => {
+  const res = await axios.get(`${API_URLS}size_category/${id}/size_option/?all=true`);
   return res;
 };
 
